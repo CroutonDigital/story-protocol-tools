@@ -4,41 +4,37 @@ GETH_VERSION='v0.9.4'
 STORY_VERSION='v0.11.0'
 GO_BIN="$HOME/go/bin"
 
-
 GREEN='\033[0;32m'
 RED='\033[0;31m'
 YELLOW='\033[0;33m'
 NC='\033[0m' 
 
 spinner() {
-    local pid=$1
+    local pid=$!
     local delay=0.1
     local spinstr='|/-\'
-    tput civis 
-    while [ "$(ps a | awk '{print $1}' | grep $pid)" ]; do
+    while kill -0 $pid 2>/dev/null; do
         local temp=${spinstr#?}
         printf " [%c]  " "$spinstr"
         local spinstr=$temp${spinstr%"$temp"}
         sleep $delay
         printf "\b\b\b\b\b\b"
     done
-    tput cnorm  
     printf "    \b\b\b\b"
 }
 
-
 clear_line() {
-    printf "\r\033[K"  
+    printf "\r\033[K"
 }
-
 
 display_progress() {
     local action="$1"
     local command="$2"
 
-
     echo -ne "${YELLOW}$action in progress...${NC}"
-    eval "$command" > /dev/null 2>&1
+    eval "$command" > /tmp/command_output 2>&1 &
+    spinner
+    wait $!
     local status=$?
 
     if [ $status -eq 0 ]; then
@@ -46,11 +42,10 @@ display_progress() {
         echo -e "${GREEN}$action completed successfully!${NC}"
     else
         clear_line
-        echo -e "${RED}$action failed.${NC}"
+        echo -e "${RED}$action failed. Check /tmp/command_output for details.${NC}"
         exit 1
     fi
 }
-
 
 setup_go_env() {
     echo 'export PATH=/usr/local/go/bin:$HOME/go/bin:$HOME/.story/geth/bin:$HOME/.story/story/bin:$PATH' >> $HOME/.bash_profile
@@ -71,23 +66,18 @@ verify_go_installation() {
     echo -e "${GREEN}Go is installed.${NC}"
 }
 
-
 display_summary() {
     echo -e "\n${GREEN}--- Installation Summary ---${NC}"
     echo -e "${YELLOW}Geth Version:${NC} ${GREEN}${GETH_VERSION}${NC}"
     echo -e "${YELLOW}Story Version:${NC} ${GREEN}${STORY_VERSION}${NC}"
     echo -e "${GREEN}All components have been installed and configured successfully!${NC}"
-   
 }
-
 
 main() {
     echo -e "${YELLOW}--- Story Protocol Installation ---${NC}"
 
-
     display_progress "Updating system" "sudo apt-get update -y && sudo apt-get upgrade -y"
     display_progress "Installing necessary packages" "sudo apt-get install -y curl git make build-essential jq wget lz4 aria2"
-
 
     display_progress "Installing Go" "
         wget https://golang.org/dl/go${GO_VERSION}.linux-amd64.tar.gz &&
@@ -96,12 +86,9 @@ main() {
         rm go${GO_VERSION}.linux-amd64.tar.gz
     "
     
-
     setup_go_env
     verify_go_installation || exit 1
 
-
-    # Остановка служб перед установкой новых бинарников
     display_progress "Stopping Story and Geth services" "
         sudo systemctl stop story-geth 2>/dev/null || true &&
         sudo systemctl stop story 2>/dev/null || true
@@ -121,7 +108,6 @@ main() {
         cp ./build/bin/geth $HOME/.story/geth/bin/
     "
 
-
     display_progress "Installing Story" "
         if [ ! -d "$HOME/story" ]; then
             git clone https://github.com/piplabs/story.git $HOME/story
@@ -136,26 +122,24 @@ main() {
         cp ./story $HOME/.story/story/bin/
     "
 
-
     display_progress "Setting up Geth service" "
         sudo tee /etc/systemd/system/story-geth.service > /dev/null <<EOF
-        [Unit]
-        Description=ETH Node
-        After=network.target
+[Unit]
+Description=ETH Node
+After=network.target
 
-        [Service]
-        User=$USER
-        Type=simple
-        WorkingDirectory=$HOME/.story/geth
-        ExecStart=$HOME/.story/geth/bin/geth --iliad --syncmode full
-        Restart=on-failure
-        LimitNOFILE=65535
+[Service]
+User=$USER
+Type=simple
+WorkingDirectory=$HOME/.story/geth
+ExecStart=$HOME/.story/geth/bin/geth --iliad --syncmode full
+Restart=on-failure
+LimitNOFILE=65535
 
-        [Install]
-        WantedBy=multi-user.target
+[Install]
+WantedBy=multi-user.target
 EOF
     "
-
 
     echo -e "${YELLOW}**Please enter a moniker for your Story node:**${NC}"
     read -r MONIKER
@@ -168,33 +152,29 @@ EOF
 
     display_progress "Setting up Story node service" "
         sudo tee /etc/systemd/system/story.service > /dev/null <<EOF
-        [Unit]
-        Description=Story Protocol Node
-        After=network.target
+[Unit]
+Description=Story Protocol Node
+After=network.target
 
-        [Service]
-        User=$USER
-        WorkingDirectory=$HOME/.story/story
-        Type=simple
-        ExecStart=$HOME/.story/story/bin/story run
-        Restart=on-failure
-        LimitNOFILE=65535
+[Service]
+User=$USER
+WorkingDirectory=$HOME/.story/story
+Type=simple
+ExecStart=$HOME/.story/story/bin/story run
+Restart=on-failure
+LimitNOFILE=65535
 
-        [Install]
-        WantedBy=multi-user.target
+[Install]
+WantedBy=multi-user.target
 EOF
     "
 
-
-    # Перезагрузка и включение сервисов story-geth и story
     display_progress "Reloading and enabling services" "
         sudo systemctl daemon-reload &&
         sudo systemctl enable story-geth story
     "
 
-
     display_summary
 }
-
 
 main
