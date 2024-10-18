@@ -10,7 +10,7 @@ YELLOW='\033[0;33m'
 NC='\033[0m' 
 
 spinner() {
-    local pid=$!
+    local pid=$1
     local delay=0.1
     local spinstr='|/-\'
     while kill -0 $pid 2>/dev/null; do
@@ -32,19 +32,31 @@ display_progress() {
     local command="$2"
 
     echo -ne "${YELLOW}$action in progress...${NC}"
-    eval "$command" > /tmp/command_output 2>&1 &
-    spinner
-    wait $!
+    
+    local tmp_file=$(mktemp)
+    
+    (eval "$command" > "$tmp_file" 2>&1) &
+    local pid=$!
+
+    spinner $pid
+
+    wait $pid
     local status=$?
+
+    sed -i '/^\[.*\].*Done.*eval.*$/d' "$tmp_file"
 
     if [ $status -eq 0 ]; then
         clear_line
         echo -e "${GREEN}$action completed successfully!${NC}"
     else
         clear_line
-        echo -e "${RED}$action failed. Check /tmp/command_output for details.${NC}"
+        echo -e "${RED}$action failed. Error details:${NC}"
+        cat "$tmp_file"
+        rm "$tmp_file"
         exit 1
     fi
+
+    rm "$tmp_file"
 }
 
 setup_go_env() {
