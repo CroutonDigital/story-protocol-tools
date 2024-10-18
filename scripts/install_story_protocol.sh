@@ -1,4 +1,4 @@
-
+#!/bin/bash
 GO_VERSION='1.21.3'
 GETH_VERSION='v0.9.4'
 STORY_VERSION='v0.11.0'
