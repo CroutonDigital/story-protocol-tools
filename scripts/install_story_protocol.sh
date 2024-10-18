@@ -104,8 +104,11 @@ main() {
     verify_go_installation || exit 1
 
 
-    sudo systemctl stop story-geth 2>/dev/null || true
-    sudo systemctl stop story 2>/dev/null || true
+    # Остановка служб перед установкой новых бинарников
+    display_progress "Stopping Story and Geth services" "
+        sudo systemctl stop story-geth 2>/dev/null || true &&
+        sudo systemctl stop story 2>/dev/null || true
+    "
 
     display_progress "Installing Geth" "
         if [ ! -d "$HOME/story-geth" ]; then
@@ -157,7 +160,7 @@ EOF
     "
 
 
-    echo -e "${YELLOW}Please enter a moniker for your Story node:${NC}"
+    echo -e "${YELLOW}**Please enter a moniker for your Story node:**${NC}"
     read -r MONIKER
     display_progress "Initializing Story node" "
         $HOME/.story/story/bin/story init --network iliad --moniker \"$MONIKER\"
@@ -186,8 +189,11 @@ EOF
     "
 
 
-    sudo systemctl daemon-reload
-    sudo systemctl enable story-geth story
+    # Перезагрузка и включение сервисов story-geth и story
+    display_progress "Reloading and enabling services" "
+        sudo systemctl daemon-reload &&
+        sudo systemctl enable story-geth story
+    "
 
 
     display_summary
