@@ -38,13 +38,10 @@ display_progress() {
 
 
     echo -ne "${YELLOW}$action in progress...${NC}"
-    eval "$command" > /dev/null 2>&1 &
-    local pid=$!
+    eval "$command" > /dev/null 2>&1
+    local status=$?
 
-    spinner $pid  
-    wait $pid 
-
-    if [ $? -eq 0 ]; then
+    if [ $status -eq 0 ]; then
         clear_line
         echo -e "${GREEN}$action completed successfully!${NC}"
     else
