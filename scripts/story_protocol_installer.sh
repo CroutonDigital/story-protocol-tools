@@ -10,11 +10,12 @@ NC='\033[0m' # No Color
 show_menu() {
     clear
     echo -e "${YELLOW}=== Story Protocol Tools ===${NC}"
-    echo "1) Install Story Protocol"
-    echo "2) Update Story Protocol"
-    echo "3) Check Node Status"
-    echo "4) View Logs"
-    echo "5) Exit"
+    echo "1) Install Story Protocol Node"
+    echo "2) Download snapshot"
+    echo "3) Start Node"
+    echo "4) Stop Node"
+    echo "5) Delete Node"
+    echo "6) Exit"
 }
 
 # Function to execute a script
@@ -53,6 +54,10 @@ while true; do
             execute_script "https://raw.githubusercontent.com/CroutonDigital/story-protocol-tools/refs/heads/main/scripts/view_logs.sh"
             ;;
         5)
+            echo -e "${GREEN}Viewing Logs...${NC}"
+            execute_script "https://raw.githubusercontent.com/CroutonDigital/story-protocol-tools/refs/heads/main/scripts/view_logs.sh"
+            ;;
+        6)
             echo -e "${YELLOW}Exiting...${NC}"
             exit 0
             ;;
