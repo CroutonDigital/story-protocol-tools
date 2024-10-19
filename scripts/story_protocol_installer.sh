@@ -39,11 +39,11 @@ while true; do
     case $choice in
         1)
             echo -e "${GREEN}Installing Story Protocol...${NC}"
-            execute_script "https://raw.githubusercontent.com/CroutonDigital/story-protocol-tools/refs/heads/main/scripts/install_story_protocol.sh"
+            execute_script "https://raw.githubusercontent.com/CroutonDigital/story-protocol-tools/refs/heads/main/scripts/node_install.sh"
             ;;
         2)
             echo -e "${GREEN}Updating Story Protocol...${NC}"
-            execute_script "https://raw.githubusercontent.com/CroutonDigital/story-protocol-tools/refs/heads/main/scripts/update_story_protocol.sh"
+            execute_script "https://raw.githubusercontent.com/CroutonDigital/story-protocol-tools/refs/heads/main/scripts/load_snapshots.sh"
             ;;
         3)
             echo -e "${GREEN}Checking Node Status...${NC}"
