@@ -8,7 +8,7 @@ NC='\033[0m'
 echo -e "${YELLOW}Starting Story Protocol Node...${NC}"
 
 # Start Geth service
-if sudo systemctl start story-geth; then
+if sudo systemctl restart story-geth; then
     echo -e "${GREEN}Geth service started successfully.${NC}"
 else
     echo -e "${RED}Failed to start Geth service.${NC}"
@@ -16,7 +16,7 @@ else
 fi
 
 # Start Story service
-if sudo systemctl start story; then
+if sudo systemctl restart story; then
     echo -e "${GREEN}Story service started successfully.${NC}"
 else
     echo -e "${RED}Failed to start Story service.${NC}"
