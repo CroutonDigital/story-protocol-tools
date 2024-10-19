@@ -15,7 +15,8 @@ show_menu() {
     echo "3) Start Node"
     echo "4) Stop Node"
     echo "5) Delete Node"
-    echo "6) Exit"
+    echo "6) View Logs"
+    echo "7) Exit"
 }
 
 # Function to execute a script
@@ -42,22 +43,26 @@ while true; do
             execute_script "https://raw.githubusercontent.com/CroutonDigital/story-protocol-tools/refs/heads/main/scripts/node_install.sh"
             ;;
         2)
-            echo -e "${GREEN}Updating Story Protocol...${NC}"
+            echo -e "${GREEN}Downloading snapshot...${NC}"
             execute_script "https://raw.githubusercontent.com/CroutonDigital/story-protocol-tools/refs/heads/main/scripts/load_snapshots.sh"
             ;;
         3)
-            echo -e "${GREEN}Checking Node Status...${NC}"
-            execute_script "https://raw.githubusercontent.com/CroutonDigital/story-protocol-tools/refs/heads/main/scripts/check_node_status.sh"
+            echo -e "${GREEN}Starting Node...${NC}"
+            execute_script "https://raw.githubusercontent.com/CroutonDigital/story-protocol-tools/refs/heads/main/scripts/start_node.sh"
             ;;
         4)
-            echo -e "${GREEN}Viewing Logs...${NC}"
-            execute_script "https://raw.githubusercontent.com/CroutonDigital/story-protocol-tools/refs/heads/main/scripts/view_logs.sh"
+            echo -e "${GREEN}Stopping Node...${NC}"
+            execute_script "https://raw.githubusercontent.com/CroutonDigital/story-protocol-tools/refs/heads/main/scripts/stop_node.sh"
             ;;
         5)
+            echo -e "${GREEN}Deleting Node...${NC}"
+            execute_script "https://raw.githubusercontent.com/CroutonDigital/story-protocol-tools/refs/heads/main/scripts/delete_node.sh"
+            ;;
+        6)
             echo -e "${GREEN}Viewing Logs...${NC}"
             execute_script "https://raw.githubusercontent.com/CroutonDigital/story-protocol-tools/refs/heads/main/scripts/view_logs.sh"
             ;;
-        6)
+        7)
             echo -e "${YELLOW}Exiting...${NC}"
             exit 0
             ;;
