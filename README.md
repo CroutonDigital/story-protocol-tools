@@ -58,7 +58,13 @@ Completely removes the Story Protocol node from your system. Use with caution!
 
 ### 6. View Logs
 
-Displays the logs for the Story Protocol node services.
+This option allows you to view the logs for your Story Protocol node. When selected, you'll see a submenu with the following options:
+
+- View Geth logs
+- View Story logs
+- Exit
+
+This feature uses `journalctl` to display real-time logs for the selected service.
 
 ### 7. Exit
 
@@ -69,3 +75,4 @@ Exits the management tool.
 - Always ensure you have recent backups before performing major operations like updating or deleting your node.
 - This script requires sudo access to perform system-level operations.
 - If you encounter any issues, please check the logs or reach out to the Story Protocol community for support.
+
