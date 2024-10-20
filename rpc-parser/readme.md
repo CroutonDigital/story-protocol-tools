@@ -1,4 +1,4 @@
-```markdown
+
 # RPC Node Finder
 
 This script finds available and synchronized RPC nodes for a specified blockchain and outputs them in YAML format.
@@ -12,22 +12,22 @@ This script finds available and synchronized RPC nodes for a specified blockchai
 
 1. Ensure you have Python 3.7 or higher installed:
 
-```bash
-python3 --version
-```
+   ```bash
+   python3 --version
+   ```
 
 2. Install the required library:
 
-```bash
-pip install aiohttp
-```
+   ```bash
+   pip install aiohttp
+   ```
 
-If you don't have pip installed, you can install it using:
+   If you don't have pip installed, you can install it using:
 
-```bash
-sudo apt update
-sudo apt install python3-pip
-```
+   ```bash
+   sudo apt update
+   sudo apt install python3-pip
+   ```
 
 ## Usage
 
@@ -101,4 +101,6 @@ Usage: python script.py <rpc_url> <chain_id>
 ## Note
 
 This script uses asynchronous programming to efficiently handle multiple network requests. Ensure you're using a Python version that supports async/await syntax (Python 3.7+).
-```
+
+
+Теперь этот код можно скопировать и вставить напрямую в ваш README.md файл в GitHub.
