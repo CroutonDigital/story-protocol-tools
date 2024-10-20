@@ -101,6 +101,3 @@ Usage: python script.py <rpc_url> <chain_id>
 ## Note
 
 This script uses asynchronous programming to efficiently handle multiple network requests. Ensure you're using a Python version that supports async/await syntax (Python 3.7+).
-
-
-Теперь этот код можно скопировать и вставить напрямую в ваш README.md файл в GitHub.
